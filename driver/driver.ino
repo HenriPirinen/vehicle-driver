@@ -1,27 +1,23 @@
-int driveDirection = 0;
-int setdriveDirection = 0;
-int buttonState = 1;
-int lastButtonState = 1; //Debounce
+byte driveDirection = 0;
+byte setdriveDirection = 0;
+bool buttonState = true;
+bool lastButtonState = true; //Debounce
+byte reverse = 3; //Dig pin 3
+byte drive = 2; //Dig pin 2
+byte btnExec = 10; //Dig pin 10
 
 /**
+   $getParams via Serial.print = request driver parameters from the server.
    0 = Neutral
    1 = Reverse
    2 = Drive
-   99 = getDriverParameters
+   99 = getDriverParams
 */
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, INPUT);
-}
-
-void loop() {
+void commands() {
   int command = 0;
   if (Serial.available() > 0) {
     command = Serial.parseInt();
-
     switch (command) {
       case 0: {
           driveDirection = 0;
@@ -45,19 +41,37 @@ void loop() {
         }
     }
   }
+}
 
-  buttonState = digitalRead(7);
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  pinMode(drive, OUTPUT);
+  pinMode(reverse, OUTPUT);
+  pinMode(btnExec, INPUT);
+}
 
+void loop() {
+  commands(); //Read serial on regular loops (requests / commands)
+  buttonState = digitalRead(btnExec);
   if (buttonState != lastButtonState) {
 
-    if (buttonState == 0) {
+    if (buttonState == false) {
+      //Default state eg. button is not pressed.
     } else {
+      Serial.println("$getParams");
+      Serial.println("{\"type\":\"log\",\"msg\":\"Get parameters from the server.\",\"importance\":\"Low\"}");
+
+      do {
+        digitalWrite(13, HIGH); //Wait for response
+      } while (Serial.available() == 0);
+      digitalWrite(13, LOW);
+      commands(); //Get response from the server
+
       if (setdriveDirection != driveDirection) {
         String _message = "{\"type\":\"log\",\"msg\":\"Set driver parameters: driveDirection: " + String(setdriveDirection) + " => " + String(driveDirection) + " \",\"importance\":\"Medium\"}";
         setdriveDirection = driveDirection;
         Serial.println(_message);
-      } else {
-        Serial.println("{\"type\":\"log\",\"msg\":\"Set driver parameters, no changes.\",\"importance\":\"Low\"}");
       }
     }
     delay(50);
@@ -67,16 +81,16 @@ void loop() {
 
   switch (setdriveDirection) {
     case 0: //Neutral
-      digitalWrite(5, LOW);
-      digitalWrite(6, LOW);
+      digitalWrite(drive, HIGH);
+      digitalWrite(reverse, HIGH);
       break;
     case 1: //Reverse
-      digitalWrite(5, LOW);
-      digitalWrite(6, HIGH);
+      digitalWrite(drive, HIGH);
+      digitalWrite(reverse, LOW);
       break;
     case 2: //Drive
-      digitalWrite(5, HIGH);
-      digitalWrite(6, LOW);
+      digitalWrite(drive, LOW);
+      digitalWrite(reverse, HIGH);
       break;
     default:
       Serial.println("{\"type\":\"log\",\"msg\":\"Invalid drive direction!\",\"importance\":\"High\"}");
