@@ -1,10 +1,10 @@
-/**
+cd/**
    $getParams via Serial.print = request driver parameters from the server.
    0 = Neutral
    1 = Reverse
    2 = Drive
    99 = getDriverParams
-   test comment for test update
+   test comment for test update #1
 */
 
 byte commands(byte currentDriveDir) {
