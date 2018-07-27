@@ -4,6 +4,7 @@
    1 = Reverse
    2 = Drive
    99 = getDriverParams
+   test comment for test update
 */
 
 byte commands(byte currentDriveDir) {
