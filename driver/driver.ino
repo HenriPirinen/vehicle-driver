@@ -1,4 +1,4 @@
-cd/**
+/**
    $getParams via Serial.print = request driver parameters from the server.
    0 = Neutral
    1 = Reverse
@@ -33,7 +33,7 @@ byte commands(byte currentDriveDir) {
           break;
         }
       default: {
-          Serial.println("{\"type\":\"log\",\"msg\":\"Invalid command!\",\"importance\":\"High\"}");
+          Serial.println("{\"origin\":\"Driver\",\"type\":\"log\",\"msg\":\"Invalid command!\",\"importance\":\"High\"}");
         }
     }
   }
@@ -66,7 +66,7 @@ int main(void) {
         //Default state eg. button is not pressed.
       } else {
         Serial.println("$getParams");
-        Serial.println("{\"type\":\"log\",\"msg\":\"Get parameters from the server.\",\"importance\":\"Low\"}");
+        Serial.println("{\"origin\":\"Driver\",\"type\":\"log\",\"msg\":\"Get parameters from the server.\",\"importance\":\"Low\"}");
 
         do {
           digitalWrite(13, HIGH); //Wait for response
@@ -75,7 +75,7 @@ int main(void) {
         driveDirection = commands(driveDirection); //Get response from the server
 
         if (setdriveDirection != driveDirection) {
-          String _message = "{\"type\":\"log\",\"msg\":\"Set driver parameters: driveDirection: " + String(setdriveDirection) + " => " + String(driveDirection) + " \",\"importance\":\"Medium\"}";
+          String _message = "{\"origin\":\"Driver\",\"type\":\"log\",\"msg\":\"Set driver parameters: driveDirection: " + String(setdriveDirection) + " => " + String(driveDirection) + " \",\"importance\":\"Medium\"}";
           setdriveDirection = driveDirection;
           Serial.println(_message);
         }
@@ -99,7 +99,7 @@ int main(void) {
         digitalWrite(reverse, HIGH);
         break;
       default:
-        Serial.println("{\"type\":\"log\",\"msg\":\"Invalid drive direction!\",\"importance\":\"High\"}");
+        Serial.println("{\"origin\":\"Driver\",\"type\":\"log\",\"msg\":\"Invalid drive direction!\",\"importance\":\"High\"}");
     }
   }
 }
