@@ -27,8 +27,7 @@ byte commands(byte currentDriveDir) {
           break;
         }
       case 99: {
-          //String _settings = "{\"type\":\"param\",\"direction\": " + String(driveDirection) + ",\"importance\":\"Low\"}";
-          String _settings = "{\"type\":\"param\",\"name\":\"direction\",\"value\": " + String(driveDir) + ",\"importance\":\"Low\"}";
+          String _settings = "{\"origin\":\"Driver\",\"type\":\"param\",\"name\":\"direction\",\"value\": " + String(driveDir) + ",\"importance\":\"Low\"}";
           Serial.println(_settings);
           break;
         }
