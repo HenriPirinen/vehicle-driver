@@ -58,9 +58,9 @@ int main(void) {
   digitalWrite(webasto, HIGH);
 
   while (true) { //Main Loop
-    if (digitalRead(charge) == LOW) {
+    if (digitalRead(charge) == LOW) { //Charger connected?
       delay(1000);
-      if (digitalRead(charge) == LOW) { //If charge is still LOW, socket is most likely in place.
+      if (digitalRead(charge) == LOW) { //If charge is still LOW, charger is most likely in place.
         if (!isCharging) {
           Serial.println("$charging ");
           digitalWrite(serialCharge, LOW);
@@ -68,13 +68,14 @@ int main(void) {
         isCharging = true;
       }
     } else {
-      if (isCharging) {
+      if (isCharging) { //Stop charging
         Serial.println("$!charging");
         digitalWrite(serialCharge, HIGH);
       }
       isCharging = false;
     }
-    if (isCharging) {
+    
+    if (isCharging) { //Check for charging commands
       commands(true);
     }
 
