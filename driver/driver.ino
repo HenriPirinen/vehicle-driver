@@ -57,22 +57,6 @@ int main(void) {
   digitalWrite(webasto, HIGH);
 
   while (true) { //Main Loop
-    buttonState = digitalRead(btnExec);
-    if (buttonState != lastButtonState && !isCharging) {
-      if (buttonState == false) {
-        //Default state i.e button is not pressed.
-      } else {
-        Serial.println("$getParams");
-        Serial.println("{\"origin\":\"Driver\",\"type\":\"log\",\"msg\":\"Get parameters from the server.\",\"importance\":\"Low\"}");
-
-        do {} while (Serial.available() == 0); //Wait for response
-        commands(false);
-      }
-      delay(50);
-    }
-    if (isCharging) {
-      commands(true);
-    }
     if (digitalRead(charge) == LOW) {
       delay(1000);
       if (digitalRead(charge) == LOW) { //If charge is still LOW, socket is most likely in place.
@@ -88,6 +72,23 @@ int main(void) {
         digitalWrite(serialCharge, HIGH);
       }
       isCharging = false;
+    }
+    if (isCharging) {
+      commands(true);
+    }
+
+    buttonState = digitalRead(btnExec);
+    if (buttonState != lastButtonState && !isCharging) {
+      if (buttonState == false) {
+        //Default state i.e button is not pressed.
+      } else {
+        Serial.println("$getParams");
+        Serial.println("{\"origin\":\"Driver\",\"type\":\"log\",\"msg\":\"Get parameters from the server.\",\"importance\":\"Low\"}");
+
+        do {} while (Serial.available() == 0); //Wait for response
+        commands(false);
+      }
+      delay(50);
     }
     lastButtonState = buttonState;
 
