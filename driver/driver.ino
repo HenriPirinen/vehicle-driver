@@ -5,6 +5,7 @@
 #define cruise 4 //Write
 #define webasto 5 //Write
 #define serialCharge 6 //Write
+//10102018
 
 void commands(bool charging) {
   String command = "0";
